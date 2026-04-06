@@ -36,7 +36,7 @@ Antes de interactuar directamente con el hardware a nivel de bits, utilizamos el
 ---
 
 ## 💽 Máquinas Virtuales
-Para el componente práctico de Sistemas Operativos, empleamos **Máquinas Virtuales**. Una máquina virtual es un entorno de software que emula un sistema informático completo sobre un hardware anfitrión. Esto permite instalar, configurar y administrar diversos sistemas operativos de forma aislada y segura. En este curso, son esenciales para experimentar con distribuciones como **Slackware** o **Zorin OS** sin riesgo de afectar el sistema operativo principal del equipo.
+Para el componente práctico de Sistemas Operativos, empleamos **Máquinas Virtuales**. Una máquina virtual es un entorno de software que emula un sistema informático completo sobre un hardware anfitrión. Esto permite instalar, configurar y administrar diversos sistemas operativos de forma aislada y segura. En este curso, son esenciales para experimentar con distribuciones como **Slackware** o **Windows Server** sin riesgo de afectar el sistema operativo principal del equipo.
 
 ---
 
