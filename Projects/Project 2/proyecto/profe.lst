@@ -1,0 +1,379 @@
+     Assembly listing for: profe.mas
+                Assembled: Sun Apr 05 18:20:41 GMT-05:00 2026
+
+         |                                                        / Proyecto fraciones egipcias
+         |                                                        / Samuel Villagran - ODSC
+000 5000 |                        INPUT                            
+001 20E3 |                        STORE inp_times                  
+002 9003 |                        JUMP while_main                  
+         |                                                        
+003 5000 |  while_main            INPUT                            
+004 20E4 |                        STORE inp_a                      
+005 5000 |                        INPUT                            
+006 20E5 |                        STORE inp_b                      
+007 9008 |                        JUMP while_main_MCM              
+         |                                                        	    
+         |                                                        
+008 10E4 |  while_main_MCM        LOAD inp_a                       
+009 20D5 |                        STORE div_b                      
+00A 10E5 |                        LOAD inp_b                       
+00B 20D6 |                        STORE div_a                      
+00C 0082 |                        JNS div                         / b/a
+00D 20E9 |                        STORE division                  /division = b/a
+00E 10D7 |                        LOAD div_r                       
+00F 8400 |                        SKIPCOND 400                    / r == 0 ?
+010 9014 |                        JUMP result_inexact              
+011 10E9 |                        LOAD division                    
+012 20E8 |                        STORE result                     
+013 9034 |                        JUMP output_result               
+         |                                                        
+014 10E9 |  result_inexact        LOAD division                    
+015 30EF |                        ADD one                          
+016 20E8 |                        STORE result                    / result = division+1
+017 6000 |                        OUTPUT                           
+018 10E8 |                        LOAD result                      
+019 20EA |                        STORE MCM_a                      
+01A 10E5 |                        LOAD inp_b                       
+01B 20EB |                        STORE MCM_b                      
+01C 0047 |                        JNS MCM                          
+01D 10EC |                        LOAD result_MCM                 / MCM(result, b)
+01E 20D6 |                        STORE div_a                      
+01F 10E8 |                        LOAD result                      
+020 20D5 |                        STORE div_b                      
+021 0082 |                        JNS div                         / MCM(result,b)/result -> multiplicador de numerador
+022 20EE |                        STORE result_subt               / Numerador que se resta de las divisiones / MCM(result, b)/result * 1   
+023 10EC |                        LOAD result_MCM                  
+024 20D6 |                        STORE div_a                      
+025 10E5 |                        LOAD inp_b                       
+026 20D5 |                        STORE div_b                      
+027 0082 |                        JNS div                         / MCM(result, b)/ b 
+028 20D8 |                        STORE mul_a                      
+029 10E4 |                        LOAD inp_a                       
+02A 20D9 |                        STORE mul_b                      
+02B 00AE |                        JNS mul                         / MCM(result, b)/ b * a
+02C 40EE |                        SUBT result_subt                /  MCM(result, b)/ b * a -  MCM(result, b)/result * 1 -> resultado de resta
+02D 20E4 |                        STORE inp_a                     / a =  resultado de resta
+02E 10EC |                        LOAD result_MCM                  
+02F 20E5 |                        STORE inp_b                      
+030 10E4 |                        LOAD inp_a                       
+031 8400 |                        SKIPCOND 400                    / a == 0 ?
+032 9008 |                        JUMP while_main_MCM             / No
+033 903E |                        JUMP next_iteration_MCM         / Si
+034 6000 |  output_result         OUTPUT                           
+035 10F0 |                        LOAD zero                        
+036 6000 |                        OUTPUT                           
+037 10E3 |                        LOAD inp_times                   
+038 40EF |                        SUBT one                         
+039 20E3 |                        STORE inp_times                  
+03A 10E3 |                        LOAD inp_times                   
+03B 8400 |                        SKIPCOND 400                     
+03C 9003 |                        JUMP while_main                  
+03D 7000 |                        HALT                             
+         |                                                        
+03E 0000 |  next_iteration_MCM    DEC 0                            
+03F 10F0 |                        LOAD zero                        
+040 6000 |                        OUTPUT                           
+041 10E3 |                        LOAD inp_times                   
+042 40EF |                        SUBT one                         
+043 20E3 |                        STORE inp_times                  
+044 8400 |                        SKIPCOND 400                    / times == 0 ?
+045 7000 |                        HALT                            / Si no
+046 9003 |                        JUMP while_main                 / Si, Sí
+         |                                                        		     
+         |                                                        
+         |                                                        /Minimo común multiplo
+         |                                                        /MCM(a, b)
+047 0000 |  MCM                   DEC 0                            
+048 9049 |                        JUMP do_MCM                      
+         |                                                        
+049 10EA |  do_MCM                LOAD MCM_a                       
+04A 20DE |                        STORE MCD_a                      
+04B 10EB |                        LOAD MCM_b                       
+04C 20DF |                        STORE MCD_b                      
+04D 006F |                        JNS MCD                         / MCD(a, b)
+04E 10EA |                        LOAD MCM_a                       
+04F 20D8 |                        STORE mul_a                      
+050 10EB |                        LOAD MCM_b                       
+051 20D9 |                        STORE mul_b                      
+052 00AE |                        JNS mul                         / a * b
+053 10DB |                        LOAD mul_m                       
+054 20DD |                        STORE abs_n                      
+055 005D |                        JNS abs                         / |a*b|
+056 10E6 |                        LOAD abs_res                     
+057 20D6 |                        STORE div_a                      
+058 10E7 |                        LOAD possible_res               / MCD(a, b)
+059 20D5 |                        STORE div_b                      
+05A 0082 |                        JNS div                          
+05B 20EC |                        STORE result_MCM                / MCM = |a*b|/MCD(a, b)
+05C C047 |                        JUMPI MCM                        
+         |                                                        
+         |                                                        /Valor absoluto
+         |                                                        /abs(n)
+05D 0000 |  abs                   DEC 0                            
+05E 10DD |                        LOAD abs_n                       
+05F 8000 |                        SKIPCOND 000                    / n < 0
+060 9062 |                        JUMP return_abs_n                
+061 9065 |                        JUMP return_abs_negative_n       
+         |                                                        
+062 10DD |  return_abs_n          LOAD abs_n                       
+063 20E6 |                        STORE abs_res                    
+064 C05D |                        JUMPI abs                        
+         |                                                        
+065 10DD |  return_abs_negative_n LOAD abs_n                       
+066 20DC |                        STORE inv_a                      
+067 007D |                        JNS inv                          
+068 10DC |                        LOAD inv_a                       
+069 C05D |                        JUMPI abs                        
+         |                                                        
+06A 10E7 |  calculate_new_div     LOAD possible_res                
+06B 20DE |                        STORE MCD_a                      
+06C 10D7 |                        LOAD div_r                       
+06D 20DF |                        STORE MCD_b                      
+06E 9071 |                        JUMP MCD_while                   
+         |                                                        
+         |                                                        /Maximo comun divisor
+         |                                                        /MCD (a, b)
+06F 0000 |  MCD                   DEC 0                            
+070 9071 |                        JUMP MCD_while                   
+         |                                                        
+071 10DE |  MCD_while             LOAD MCD_a                       
+072 20D6 |                        STORE div_a                      
+073 10DF |                        LOAD MCD_b                       
+074 20D5 |                        STORE div_b                      
+075 10DF |                        LOAD MCD_b                       
+076 20E7 |                        STORE possible_res               
+077 0082 |                        JNS div                          
+078 10D7 |                        LOAD div_r                       
+079 8400 |                        SKIPCOND 400                     
+07A 906A |                        JUMP calculate_new_div           
+07B 10E7 |                        LOAD possible_res                
+07C C06F |                        JUMPI MCD                        
+         |                                                        
+         |                                                        /Inverso
+         |                                                        /INV(a)
+07D 0000 |  inv                   DEC 0                            
+07E A000 |                        CLEAR                            
+07F 40DC |                        SUBT inv_a                      / 0 - a
+080 20DC |                        STORE inv_a                      
+081 C07D |                        JUMPI inv                        
+         |                                                        
+         |                                                        /Division
+         |                                                        /div(a, b) a/b
+082 0000 |  div                   DEC 0                            
+083 A000 |                        CLEAR                            
+084 20D4 |                        STORE div_q                     / q = 0
+085 10D6 |                        LOAD div_a                       
+086 20D7 |                        STORE div_r                     / r = a
+087 9088 |                        JUMP div_w                       
+         |                                                                                                                   
+088 10D6 |  div_w                 LOAD div_a                       
+089 8000 |                        SKIPCOND 000                    / a < 0 ?
+08A 9098 |                        JUMP div_w_positive             / a >= 0
+08B 908C |                        JUMP div_w_negative             / a < 0
+         |                                                                                                                               
+08C 10D7 |  div_w_negative        LOAD div_r                       
+08D 30D5 |                        ADD div_b                        
+08E 8800 |                        SKIPCOND 800                    / r + b > 0 ?
+08F 9091 |                        JUMP do_add_neg                 / Si r + b <= 0
+090 90A6 |                        JUMP div_endw_neg               / Si r se convierte en positivo
+         |                                                                                                                               		
+         |                                                                                                                               
+091 10D7 |  do_add_neg            LOAD div_r                      / Si r sigue siendo negativo 
+092 30D5 |                        ADD div_b                        
+093 20D7 |                        STORE div_r                     / r += b
+094 10D4 |                        LOAD div_q                       
+095 30EF |                        ADD one                          
+096 20D4 |                        STORE div_q                     / q++
+097 908C |                        JUMP div_w_negative              
+         |                                                                                                                               
+098 10D7 |  div_w_positive        LOAD div_r                       
+099 40D5 |                        SUBT div_b                       
+09A 8000 |                        SKIPCOND 000                    / r - b < 0
+09B 909D |                        JUMP do_add_pos                 / Si r - b >= 0
+09C 90A4 |                        JUMP div_endw_pos               / Si r se convierte en negativo
+         |                                                                                                                               
+09D 10D7 |  do_add_pos            LOAD div_r                      / Si r sigue siendo positivo
+09E 40D5 |                        SUBT div_b                       
+09F 20D7 |                        STORE div_r                     / r -= b
+0A0 10D4 |                        LOAD div_q                       
+0A1 30EF |                        ADD one                          
+0A2 20D4 |                        STORE div_q                     / q++
+0A3 9098 |                        JUMP div_w_positive             / Vuelva y compruebeme el ciclo positivo
+         |                                                                                                                               
+0A4 10D4 |  div_endw_pos          LOAD div_q                       
+0A5 C082 |                        JUMPI div                        
+         |                                                                                                                               
+0A6 10D4 |  div_endw_neg          LOAD div_q                       
+0A7 20DC |                        STORE inv_a                      
+0A8 007D |                        JNS inv                          
+0A9 20D4 |                        STORE div_q                     / q = -q
+0AA C082 |                        JUMPI div                        
+         |                                                                                                                               
+0AB A000 |  return_0_div          CLEAR                            
+0AC 20D4 |                        STORE div_q                      
+0AD C082 |                        JUMPI div                        
+         |                                                        
+         |                                                        /Multiplicacion
+         |                                                        /mul(a, b) a*b
+0AE 0000 |  mul                   DEC 0                            
+0AF A000 |                        CLEAR                            
+0B0 20DB |                        STORE mul_m                     / m = 0
+0B1 20DA |                        STORE mul_i                     / i = 0
+0B2 10D8 |                        LOAD mul_a                       
+0B3 8000 |                        SKIPCOND 000                     
+0B4 90B6 |                        JUMP mul_check_pos              / No, es positivo o cero. Ir a chequear positivo.   /
+0B5 90BA |                        JUMP mul_w_negative             / Sí, es negativo. Ir al ciclo negativo.            /
+         |                                                                                                                               
+0B6 10D8 |  mul_check_pos         LOAD mul_a                      /
+0B7 8800 |                        SKIPCOND 800                    / ¿Es a > 0?                                /
+0B8 90D2 |                        JUMP mul_end                    / Es exactamente 0, terminar.               /
+0B9 90C5 |                        JUMP mul_w_positive             / Es positivo, ir al ciclo positivo.        / Ayudado con Calude Sonnet 4.6 IA parte de comprobación
+         |                                                                                                                               
+0BA 10D8 |  mul_w_negative        LOAD mul_a                      / a < i
+0BB 40DA |                        SUBT mul_i                       
+0BC 8000 |                        SKIPCOND 000                     
+0BD 90D2 |                        JUMP mul_end                    / a >= i
+0BE 10DB |                        LOAD mul_m                      / Si a < i
+0BF 40D9 |                        SUBT mul_b                       
+0C0 20DB |                        STORE mul_m                      
+0C1 10DA |                        LOAD mul_i                       
+0C2 40EF |                        SUBT one                         
+0C3 20DA |                        STORE mul_i                      
+0C4 90BA |                        JUMP mul_w_negative              
+         |                                                                                                                               
+0C5 10DA |  mul_w_positive        LOAD mul_i                       
+0C6 40D8 |                        SUBT mul_a                       
+0C7 8000 |                        SKIPCOND 000                    / i < a
+0C8 90D2 |                        JUMP mul_end                    / no
+0C9 10DB |                        LOAD mul_m                      / Si i < a
+0CA 30D9 |                        ADD mul_b                        
+0CB 20DB |                        STORE mul_m                     / m += b
+0CC 10DA |                        LOAD mul_i                       
+0CD 30EF |                        ADD one                          
+0CE 20DA |                        STORE mul_i                     / i++
+0CF 90C5 |                        JUMP mul_w_positive              
+0D0 10DB |                        LOAD mul_m                       
+0D1 C0AE |                        JUMPI mul                       / return m     
+         |                                                        
+0D2 10DB |  mul_end               LOAD mul_m                       
+0D3 C0AE |                        JUMPI mul                       / return m              
+         |                                                        
+0D4 0000 |  div_q                 DEC 0                            
+0D5 0000 |  div_b                 DEC 0                            
+0D6 0000 |  div_a                 DEC 0                            
+0D7 0000 |  div_r                 DEC 0                            
+         |                                                        
+0D8 0000 |  mul_a                 DEC 0                            
+0D9 0000 |  mul_b                 DEC 0                            
+0DA 0000 |  mul_i                 DEC 0                            
+0DB 0000 |  mul_m                 DEC 0                            
+         |                                                        
+0DC 0000 |  inv_a                 DEC 0                            
+         |                                                        
+0DD 0000 |  abs_n                 DEC 0                            
+         |                                                        
+0DE 0000 |  MCD_a                 DEC 0                            
+0DF 0000 |  MCD_b                 DEC 0                            
+         |                                                        
+0E0 0000 |  res_MCD               DEC 0                            
+         |                                                        
+0E1 0000 |  input_a               DEC 0                            
+0E2 0000 |  input_b               DEC 0                            
+         |                                                        
+0E3 0000 |  inp_times             DEC 0                            
+0E4 0000 |  inp_a                 DEC 0                            
+0E5 0000 |  inp_b                 DEC 0                            
+         |                                                        
+0E6 0000 |  abs_res               DEC 0                            
+         |                                                        
+0E7 0000 |  possible_res          DEC 0                            
+0E8 0000 |  result                DEC 0                            
+0E9 0000 |  division              DEC 0                            
+         |                                                        
+         |                                                        
+0EA 0000 |  MCM_a                 DEC 0                            
+0EB 0000 |  MCM_b                 DEC 0                            
+         |                                                        
+0EC 0000 |  result_MCM            DEC 0                            
+         |                                                        
+0ED 0000 |  result_multiply       DEC 0                            
+         |                                                        
+0EE 0000 |  result_subt           DEC 0                            
+         |                                                        
+0EF 0001 |  one                   DEC 1                            
+0F0 0000 |  zero                  DEC 0                            
+
+Assembly successful.
+
+         SYMBOL TABLE
+         -----------------------------------------------------------------
+          Symbol                | Defined | References 
+         -----------------------+---------+-------------------------------
+          MCD                   |   06F   | 04D, 07C
+          MCD_a                 |   0DE   | 04A, 06B, 071
+          MCD_b                 |   0DF   | 04C, 06D, 073, 075
+          MCD_while             |   071   | 06E, 070
+          MCM                   |   047   | 01C, 05C
+          MCM_a                 |   0EA   | 019, 049, 04E
+          MCM_b                 |   0EB   | 01B, 04B, 050
+          abs                   |   05D   | 055, 064, 069
+          abs_n                 |   0DD   | 054, 05E, 062, 065
+          abs_res               |   0E6   | 056, 063
+          calculate_new_div     |   06A   | 07A
+          div                   |   082   | 00C, 021, 027, 05A, 077, 0A5, 
+                                |         | 0AA, 0AD
+          div_a                 |   0D6   | 00B, 01E, 024, 057, 072, 085, 
+                                |         | 088
+          div_b                 |   0D5   | 009, 020, 026, 059, 074, 08D, 
+                                |         | 092, 099, 09E
+          div_endw_neg          |   0A6   | 090
+          div_endw_pos          |   0A4   | 09C
+          div_q                 |   0D4   | 084, 094, 096, 0A0, 0A2, 0A4, 
+                                |         | 0A6, 0A9, 0AC
+          div_r                 |   0D7   | 00E, 06C, 078, 086, 08C, 091, 
+                                |         | 093, 098, 09D, 09F
+          div_w                 |   088   | 087
+          div_w_negative        |   08C   | 08B, 097
+          div_w_positive        |   098   | 08A, 0A3
+          division              |   0E9   | 00D, 011, 014
+          do_MCM                |   049   | 048
+          do_add_neg            |   091   | 08F
+          do_add_pos            |   09D   | 09B
+          inp_a                 |   0E4   | 004, 008, 029, 02D, 030
+          inp_b                 |   0E5   | 006, 00A, 01A, 025, 02F
+          inp_times             |   0E3   | 001, 037, 039, 03A, 041, 043
+          input_a               |   0E1   | 
+          input_b               |   0E2   | 
+          inv                   |   07D   | 067, 081, 0A8
+          inv_a                 |   0DC   | 066, 068, 07F, 080, 0A7
+          mul                   |   0AE   | 02B, 052, 0D1, 0D3
+          mul_a                 |   0D8   | 028, 04F, 0B2, 0B6, 0BA, 0C6
+          mul_b                 |   0D9   | 02A, 051, 0BF, 0CA
+          mul_check_pos         |   0B6   | 0B4
+          mul_end               |   0D2   | 0B8, 0BD, 0C8
+          mul_i                 |   0DA   | 0B1, 0BB, 0C1, 0C3, 0C5, 0CC, 
+                                |         | 0CE
+          mul_m                 |   0DB   | 053, 0B0, 0BE, 0C0, 0C9, 0CB, 
+                                |         | 0D0, 0D2
+          mul_w_negative        |   0BA   | 0B5, 0C4
+          mul_w_positive        |   0C5   | 0B9, 0CF
+          next_iteration_MCM    |   03E   | 033
+          one                   |   0EF   | 015, 038, 042, 095, 0A1, 0C2, 
+                                |         | 0CD
+          output_result         |   034   | 013
+          possible_res          |   0E7   | 058, 06A, 076, 07B
+          res_MCD               |   0E0   | 
+          result                |   0E8   | 012, 016, 018, 01F
+          result_MCM            |   0EC   | 01D, 023, 02E, 05B
+          result_inexact        |   014   | 010
+          result_multiply       |   0ED   | 
+          result_subt           |   0EE   | 022, 02C
+          return_0_div          |   0AB   | 
+          return_abs_n          |   062   | 060
+          return_abs_negative_n |   065   | 061
+          while_main            |   003   | 002, 03C, 046
+          while_main_MCM        |   008   | 007, 032
+          zero                  |   0F0   | 035, 03F
+         -----------------------------------------------------------------
+
+

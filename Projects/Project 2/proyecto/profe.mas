@@ -1,0 +1,301 @@
+/ Proyecto fraciones egipcias
+/ Samuel Villagran - ODSC
+INPUT
+STORE inp_times
+JUMP while_main
+
+while_main, INPUT 
+	    STORE inp_a
+	    INPUT
+	    STORE inp_b
+	    JUMP while_main_MCM
+	    
+
+while_main_MCM, LOAD inp_a
+	        STORE div_b
+	        LOAD inp_b
+	        STORE div_a
+	        JNS div         / b/a
+	        STORE division /division = b/a
+		LOAD div_r
+		SKIPCOND 400   / r == 0 ?
+		JUMP result_inexact
+		LOAD division
+		STORE result
+		JUMP output_result
+
+result_inexact, LOAD division
+	        ADD one 
+	        STORE result / result = division+1
+		OUTPUT
+		LOAD result
+	    	STORE MCM_a
+		LOAD inp_b
+		STORE MCM_b
+		JNS MCM
+		LOAD result_MCM  / MCM(result, b)
+		STORE div_a
+		LOAD result
+		STORE div_b
+		JNS div             / MCM(result,b)/result -> multiplicador de numerador
+		STORE result_subt   / Numerador que se resta de las divisiones / MCM(result, b)/result * 1   
+		LOAD result_MCM
+		STORE div_a
+		LOAD inp_b
+		STORE div_b 
+		JNS div  / MCM(result, b)/ b 
+		STORE mul_a
+		LOAD inp_a
+		STORE mul_b
+		JNS mul        / MCM(result, b)/ b * a
+		SUBT result_subt /  MCM(result, b)/ b * a -  MCM(result, b)/result * 1 -> resultado de resta
+		STORE inp_a      / a =  resultado de resta
+		LOAD result_MCM
+		STORE inp_b 
+		LOAD inp_a
+		SKIPCOND 400 / a == 0 ?
+		JUMP while_main_MCM / No
+		JUMP next_iteration_MCM / Si
+output_result,  OUTPUT
+		LOAD zero
+		OUTPUT
+		LOAD inp_times
+		SUBT one
+		STORE inp_times
+		LOAD inp_times
+		SKIPCOND 400
+		JUMP while_main
+		HALT
+
+next_iteration_MCM,  DEC 0
+		     LOAD zero
+		     OUTPUT
+		     LOAD inp_times
+		     SUBT one
+		     STORE inp_times
+		     SKIPCOND 400  / times == 0 ?
+		     HALT / Si no
+		     JUMP while_main / Si, Sí
+		     
+
+/Minimo común multiplo
+/MCM(a, b)
+MCM, 	    DEC 0
+	    JUMP do_MCM
+
+do_MCM,	    LOAD MCM_a
+	    STORE MCD_a
+	    LOAD MCM_b
+	    STORE MCD_b
+	    JNS MCD   / MCD(a, b)
+	    LOAD MCM_a
+	    STORE mul_a
+	    LOAD MCM_b
+	    STORE mul_b
+	    JNS mul       / a * b
+	    LOAD mul_m
+	    STORE abs_n
+	    JNS abs       / |a*b|
+	    LOAD abs_res
+	    STORE div_a
+	    LOAD possible_res / MCD(a, b)
+	    STORE div_b
+	    JNS div 
+	    STORE result_MCM / MCM = |a*b|/MCD(a, b)
+	    JUMPI MCM
+
+/Valor absoluto
+/abs(n)
+abs, 	    DEC 0
+	    LOAD abs_n
+	    SKIPCOND 000 / n < 0
+	    JUMP return_abs_n
+	    JUMP return_abs_negative_n
+
+return_abs_n, LOAD abs_n
+	      STORE abs_res
+	      JUMPI abs
+
+return_abs_negative_n, LOAD abs_n
+		       STORE inv_a
+		       JNS inv
+		       LOAD inv_a
+		       JUMPI abs
+
+calculate_new_div,  LOAD possible_res
+		    STORE MCD_a
+		    LOAD div_r
+		    STORE MCD_b 
+		    JUMP MCD_while
+
+/Maximo comun divisor
+/MCD (a, b)
+MCD, 		    DEC 0
+		    JUMP MCD_while
+
+MCD_while,	    LOAD MCD_a
+		    STORE div_a
+		    LOAD MCD_b
+		    STORE div_b
+		    LOAD MCD_b
+		    STORE possible_res
+		    JNS div
+		    LOAD div_r
+		    SKIPCOND 400
+		    JUMP calculate_new_div
+		    LOAD possible_res
+		    JUMPI MCD
+
+/Inverso
+/INV(a)
+inv,                     DEC 0                               
+                         CLEAR                               
+                         SUBT inv_a                         / 0 - a
+			 STORE inv_a
+                         JUMPI inv                           
+
+/Division
+/div(a, b) a/b
+div,                     DEC 0                               
+                         CLEAR                               
+                         STORE div_q                        / q = 0
+                         LOAD div_a                          
+                         STORE div_r                        / r = a
+                         JUMP div_w                          
+                                                           
+div_w,                   LOAD div_a                          
+                         SKIPCOND 000                       / a < 0 ?
+                         JUMP div_w_positive                / a >= 0
+                         JUMP div_w_negative                / a < 0
+                                                                       
+div_w_negative,          LOAD div_r                          
+                         ADD div_b                           
+                         SKIPCOND 800                       / r + b > 0 ?
+                         JUMP do_add_neg                    / Si r + b <= 0
+                         JUMP div_endw_neg                  / Si r se convierte en positivo
+                                                                       		
+                                                                       
+do_add_neg,              LOAD div_r                         / Si r sigue siendo negativo 
+                         ADD div_b                           
+                         STORE div_r                        / r += b
+                         LOAD div_q                          
+                         ADD one                             
+                         STORE div_q                        / q++
+                         JUMP div_w_negative                 
+                                                                       
+div_w_positive,          LOAD div_r                          
+                         SUBT div_b                          
+                         SKIPCOND 000                       / r - b < 0
+                         JUMP do_add_pos                    / Si r - b >= 0
+                         JUMP div_endw_pos                  / Si r se convierte en negativo
+                                                                       
+do_add_pos,              LOAD div_r                         / Si r sigue siendo positivo
+                         SUBT div_b                          
+                         STORE div_r                        / r -= b
+                         LOAD div_q                          
+                         ADD one                             
+                         STORE div_q                        / q++
+                         JUMP div_w_positive                / Vuelva y compruebeme el ciclo positivo
+                                                                       
+div_endw_pos,            LOAD div_q                          
+                         JUMPI div                           
+                                                                       
+div_endw_neg,            LOAD div_q                          
+                         STORE inv_a                         
+                         JNS inv                             
+                         STORE div_q                        / q = -q
+                         JUMPI div                           
+                                                                       
+return_0_div,            CLEAR                               
+                         STORE div_q                         
+                         JUMPI div      
+
+/Multiplicacion
+/mul(a, b) a*b
+mul,                      DEC 0                               
+                         CLEAR                               
+                         STORE mul_m                        / m = 0
+                         STORE mul_i                        / i = 0
+                         LOAD mul_a                          
+                         SKIPCOND 000                        
+                         JUMP mul_check_pos                 / No, es positivo o cero. Ir a chequear positivo.   /
+                         JUMP mul_w_negative                / Sí, es negativo. Ir al ciclo negativo.            /
+                                                                       
+mul_check_pos,            LOAD mul_a                         /
+                         SKIPCOND 800                       / ¿Es a > 0?                                /
+                         JUMP mul_end                       / Es exactamente 0, terminar.               /
+                         JUMP mul_w_positive                / Es positivo, ir al ciclo positivo.        / Ayudado con Calude Sonnet 4.6 IA parte de comprobación
+                                                                       
+mul_w_negative,           LOAD mul_a                         / a < i
+                         SUBT mul_i                          
+                         SKIPCOND 000                        
+                         JUMP mul_end                       / a >= i
+                         LOAD mul_m                         / Si a < i
+                         SUBT mul_b                          
+                         STORE mul_m                         
+                         LOAD mul_i                          
+                         SUBT one                            
+                         STORE mul_i                         
+                         JUMP mul_w_negative                 
+                                                                       
+mul_w_positive,           LOAD mul_i                          
+                         SUBT mul_a                          
+                         SKIPCOND 000                       / i < a
+                         JUMP mul_end                       / no
+                         LOAD mul_m                         / Si i < a
+                         ADD mul_b                           
+                         STORE mul_m                        / m += b
+                         LOAD mul_i                          
+                         ADD one                             
+                         STORE mul_i                        / i++
+                         JUMP mul_w_positive                 
+                         LOAD mul_m                          
+                         JUMPI mul                          / return m     
+
+mul_end,                 LOAD mul_m                          
+                         JUMPI mul                          / return m              
+
+div_q, 		 DEC 0
+div_b, 		 DEC 0
+div_a, 		 DEC 0
+div_r,		 DEC 0
+
+mul_a,		 DEC 0
+mul_b,		 DEC 0
+mul_i,		 DEC 0
+mul_m,		 DEC 0
+
+inv_a, 		 DEC 0
+
+abs_n,		 DEC 0
+
+MCD_a,		 DEC 0
+MCD_b,		 DEC 0
+
+res_MCD, 	 DEC 0
+
+input_a, 	 DEC 0
+input_b,	 DEC 0
+
+inp_times,	 DEC 0
+inp_a,		 DEC 0
+inp_b,		 DEC 0
+
+abs_res,	 DEC 0
+
+possible_res,    DEC 0
+result,		 DEC 0
+division,	 DEC 0
+
+
+MCM_a, 		DEC 0
+MCM_b,		DEC 0
+
+result_MCM, 	 DEC 0
+
+result_multiply, DEC 0
+
+result_subt,	 DEC 0
+
+one, 		 DEC 1  
+zero,		 DEC 0
