@@ -69,3 +69,6 @@ y calcula su **división entera** usando el método de
 
 > Ambos proyectos leen desde **entrada estándar** y escriben en
 > **salida estándar** con el formato exacto especificado en cada enunciado.
+
+
+**Ningún PDF de este repositorio esta autorizado para su distribución, todos los derechos reservados a la Universidad Escuela Colombiana de Ingeniería Julio Garavito.**
