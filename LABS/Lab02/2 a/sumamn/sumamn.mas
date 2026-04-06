@@ -1,0 +1,54 @@
+INPUT 
+STORE times
+JUMP while_main
+
+while_main, LOAD times 
+       	    SKIPCOND 400  / ? times == 0
+            JUMP continue_while / Si no Ejecute el programa
+            JUMP end_while_main / Si, si termine el ciclo
+       
+
+continue_while, INPUT
+	   	STORE x  / Guarda x
+	   	INPUT
+	   	STORE y  / Guarda y
+	   	LOAD x
+       	   	STORE sum_m  / m = x
+           	LOAD y
+           	STORE sum_n  / n = y
+
+           	JNS sumatory   
+	   	LOAD total_sumatory  / Resultado de sumatory
+           	OUTPUT / Imprime la variable total_sumatory
+		LOAD times
+       		SUBT one 
+       		STORE times
+       		JUMP while_main
+
+sumatory,   Dec 0
+            CLEAR
+            STORE total_sumatory / Inicializar variable en 0
+sumatory_while, LOAD sum_m
+       		SUBT sum_n
+		SKIPCOND 800
+       		JUMP sumatory_start / Si m <= n 
+       		JUMPI sumatory / Si no, regrese a read_data
+
+sumatory_start, LOAD total_sumatory
+	        ADD sum_m
+		STORE total_sumatory / total_sumatory += m
+		LOAD sum_m
+		ADD one
+		STORE sum_m / m ++
+ 		JUMP sumatory_while
+
+end_while_main, HALT
+
+times, DEC 0
+sum_m, DEC 0
+sum_n, DEC 0
+total_sumatory, DEC 0
+x, DEC 0
+y, DEC 0
+
+one,   DEC 1

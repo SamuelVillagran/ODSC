@@ -1,0 +1,87 @@
+INPUT 
+STORE times
+JUMP while_main
+
+while_main, LOAD times 
+       SKIPCOND 400  / ? times == 0
+       JUMP continue_while / Si no Ejecute el programa
+       JUMP end_while_main / Si, si termine el ciclo
+
+       
+
+continue_while, JNS read_data
+		LOAD times
+       		SUBT one 
+       		STORE times / i--
+       		JUMP while_main / Compruebe si sigue en ciclo o si termina
+
+read_data, DEC 0
+	   INPUT
+	   STORE x
+	   INPUT
+	   STORE y
+	   INPUT
+	   STORE z
+	   LOAD x  / Empieza a calcular el maximo, max(x, y, z)
+	   STORE max_a
+	   LOAD y
+	   STORE max_b
+	   JNS max
+	   STORE max_a
+	   LOAD z
+	   STORE max_b
+	   JNS max
+	   STORE result_max / guarda result_max = max(x, y, z)
+
+	   LOAD x / Calcula el mínimo 
+       	   STORE min_a
+           LOAD y
+           STORE min_b
+	   JNS min
+	   STORE min_a
+	   LOAD z
+	   STORE min_b
+	   JNS min
+	   ADD result_max
+           OUTPUT
+
+	   JUMPI read_data
+
+max,        Dec 0
+            CLEAR
+
+max_c,      LOAD max_a
+       	    SUBT max_b
+	    SKIPCOND 800
+       	    JUMP max_return_b / a <= b
+ 	    JUMP max_return_a / a > b
+max_return_b,   LOAD max_b
+	        JUMPI max / hace que max retorne b
+max_return_a,   LOAD max_a
+	        JUMPI max / hace que max retorne a
+
+min,        DEC 0
+
+min_c,	    LOAD min_a
+	    SUBT min_b
+	    SKIPCOND 800
+	    JUMP min_return_a / a <= b 
+	    JUMP min_return_b / a > b
+min_return_a,    LOAD min_a
+		 JUMPI min / Se le asigna a min a
+min_return_b,    LOAD min_b
+		 JUMPI min / Se le asigna a min b
+
+end_while_main, HALT
+
+times, DEC 0
+max_a, DEC 1
+max_b, DEC 2
+min_a, DEC 1
+min_b, DEC 2
+result_max, DEC 3
+x, DEC 4
+y, DEC 5
+z, DEC 6
+
+one,   DEC 1

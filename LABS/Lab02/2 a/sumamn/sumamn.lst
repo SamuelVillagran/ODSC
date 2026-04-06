@@ -1,0 +1,80 @@
+     Assembly listing for: sumamn.mas
+                Assembled: Sat Mar 14 10:17:16 GMT-05:00 2026
+
+000 5000 |                 INPUT                     
+001 2026 |                 STORE times               
+002 9003 |                 JUMP while_main           
+         |                                          
+003 1026 |  while_main     LOAD times                
+004 8400 |                 SKIPCOND 400             / ? times == 0
+005 9007 |                 JUMP continue_while      / Si no Ejecute el programa
+006 9025 |                 JUMP end_while_main      / Si, si termine el ciclo
+         |                                                 
+         |                                          
+007 5000 |  continue_while INPUT                     
+008 202A |                 STORE x                  / Guarda x
+009 5000 |                 INPUT                     
+00A 202B |                 STORE y                  / Guarda y
+00B 102A |                 LOAD x                    
+00C 2027 |                 STORE sum_m              / m = x
+00D 102B |                 LOAD y                    
+00E 2028 |                 STORE sum_n              / n = y
+         |                                          
+00F 0016 |                 JNS sumatory              
+010 1029 |                 LOAD total_sumatory      / Resultado de sumatory
+011 6000 |                 OUTPUT                   / Imprime la variable total_sumatory
+012 1026 |                 LOAD times                
+013 402C |                 SUBT one                  
+014 2026 |                 STORE times               
+015 9003 |                 JUMP while_main           
+         |                                          
+016 0000 |  sumatory       DEC 0                     
+017 A000 |                 CLEAR                     
+018 2029 |                 STORE total_sumatory     / Inicializar variable en 0
+019 1027 |  sumatory_while LOAD sum_m                
+01A 4028 |                 SUBT sum_n                
+01B 8800 |                 SKIPCOND 800              
+01C 901E |                 JUMP sumatory_start      / Si m <= n 
+01D C016 |                 JUMPI sumatory           / Si no, regrese a read_data
+         |                                          
+01E 1029 |  sumatory_start LOAD total_sumatory       
+01F 3027 |                 ADD sum_m                 
+020 2029 |                 STORE total_sumatory     / total_sumatory += m
+021 1027 |                 LOAD sum_m                
+022 302C |                 ADD one                   
+023 2027 |                 STORE sum_m              / m ++
+024 9019 |                 JUMP sumatory_while       
+         |                                          
+025 7000 |  end_while_main HALT                      
+         |                                          
+026 0000 |  times          DEC 0                     
+027 0000 |  sum_m          DEC 0                     
+028 0000 |  sum_n          DEC 0                     
+029 0000 |  total_sumatory DEC 0                     
+02A 0000 |  x              DEC 0                     
+02B 0000 |  y              DEC 0                     
+         |                                          
+02C 0001 |  one            DEC 1                     
+
+Assembly successful.
+
+         SYMBOL TABLE
+         ----------------------------------------------------------
+          Symbol         | Defined | References 
+         ----------------+---------+-------------------------------
+          continue_while |   007   | 005
+          end_while_main |   025   | 006
+          one            |   02C   | 013, 022
+          sum_m          |   027   | 00C, 019, 01F, 021, 023
+          sum_n          |   028   | 00E, 01A
+          sumatory       |   016   | 00F, 01D
+          sumatory_start |   01E   | 01C
+          sumatory_while |   019   | 024
+          times          |   026   | 001, 003, 012, 014
+          total_sumatory |   029   | 010, 018, 01E, 020
+          while_main     |   003   | 002, 015
+          x              |   02A   | 008, 00B
+          y              |   02B   | 00A, 00D
+         ----------------------------------------------------------
+
+

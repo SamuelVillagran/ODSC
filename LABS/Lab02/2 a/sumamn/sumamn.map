@@ -1,0 +1,17 @@
+ -------------------------
+ Symbol         | Location
+ ---------------+---------
+ continue_while |   007
+ end_while_main |   025
+ one            |   02C
+ sum_m          |   027
+ sum_n          |   028
+ sumatory       |   016
+ sumatory_start |   01E
+ sumatory_while |   019
+ times          |   026
+ total_sumatory |   029
+ while_main     |   003
+ x              |   02A
+ y              |   02B
+
