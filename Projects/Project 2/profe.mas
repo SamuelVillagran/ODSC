@@ -1,27 +1,64 @@
 / Proyecto fraciones egipcias
 / Samuel Villagran - ODSC
+ORG 100
+
 INPUT
 STORE inp_times
-JUMP while_main
+SKIPCOND 800
+HALT              / Si times <= 0 termina el programa
+JUMP while_main   / Si es mayor a 0 ejecute
 
 while_main, INPUT 
 	    STORE inp_a
 	    INPUT
 	    STORE inp_b
-	    JUMP while_main_MCM
-	    
+	    LOAD inp_a
+	    SUBT inp_b
+	    SKIPCOND 000 / a < b 
+	    JUMP return_0_while_main
+	    LOAD inp_a
+	    SKIPCOND 800
+	    JUMP return_0_while_main
+	    JUMP while_main_MCM // Si a no es igual a cero
 
-while_main_MCM, LOAD inp_a
-	        STORE div_b
-	        LOAD inp_b
+return_0_while_main, LOAD zero 
+	    	     OUTPUT
+	    	     JUMP while_main
+
+while_main_MCM, LOAD inp_b
+		SKIPCOND 800     / b > 0
+		JUMP return_0_while_main
+		LOAD inp_a
+		STORE MCD_a
+		LOAD inp_b
+		STORE MCD_b
+		JNS MCD
+		LOAD inp_a   / Reduciendo valores (a)
 	        STORE div_a
+	        LOAD possible_res  / MCD
+	        STORE div_b
 	        JNS div         / b/a
+		STORE inp_a
+
+	        LOAD inp_b   / Reduciendo valores (b)
+	        STORE div_a
+	        LOAD possible_res  / MCD
+	        STORE div_b
+	        JNS div         
+		STORE inp_b
+    
+		LOAD inp_a
+		STORE div_b
+	        LOAD inp_b
+		STORE div_a
+		JNS div           /b / a
 	        STORE division /division = b/a
 		LOAD div_r
 		SKIPCOND 400   / r == 0 ?
 		JUMP result_inexact
 		LOAD division
 		STORE result
+		OUTPUT
 		JUMP output_result
 
 result_inexact, LOAD division
@@ -56,8 +93,8 @@ result_inexact, LOAD division
 		SKIPCOND 400 / a == 0 ?
 		JUMP while_main_MCM / No
 		JUMP next_iteration_MCM / Si
-output_result,  OUTPUT
-		LOAD zero
+
+output_result,  LOAD zero
 		OUTPUT
 		LOAD inp_times
 		SUBT one
@@ -67,15 +104,14 @@ output_result,  OUTPUT
 		JUMP while_main
 		HALT
 
-next_iteration_MCM,  DEC 0
-		     LOAD zero
+next_iteration_MCM,  LOAD zero
 		     OUTPUT
 		     LOAD inp_times
 		     SUBT one
 		     STORE inp_times
 		     SKIPCOND 400  / times == 0 ?
-		     HALT / Si no
-		     JUMP while_main / Si, Sí
+		     JUMP while_main / Si no
+		     HALT / Si, Sí
 		     
 
 /Minimo común multiplo
@@ -120,6 +156,7 @@ return_abs_negative_n, LOAD abs_n
 		       STORE inv_a
 		       JNS inv
 		       LOAD inv_a
+		       STORE abs_res
 		       JUMPI abs
 
 calculate_new_div,  LOAD possible_res
@@ -160,8 +197,12 @@ div,                     DEC 0
                          CLEAR                               
                          STORE div_q                        / q = 0
                          LOAD div_a                          
-                         STORE div_r                        / r = a
-                         JUMP div_w                          
+                         STORE div_r   		/ r = a
+			 LOAD div_b
+		 	 SKIPCOND 400         
+                         JUMP div_w  
+			 LOAD zero
+			 JUMPI div                        
                                                            
 div_w,                   LOAD div_a                          
                          SKIPCOND 000                       / a < 0 ?
